@@ -32,15 +32,17 @@ final class AudioPassthroughEngine {
     /// Start the audio passthrough from the given input device to the given output device.
     /// - Parameters:
     ///   - inputDeviceID: The Core Audio device ID for the microphone input.
+    ///                    Pass 0 to use system default.
     ///   - outputDeviceID: The Core Audio device ID for the headphone output.
+    ///                     Pass 0 to use system default.
     ///   - volume: The passthrough volume (0.0 to 1.5).
     func start(inputDeviceID: AudioDeviceID, outputDeviceID: AudioDeviceID, volume: Float) {
         stop()
         errorMessage = nil
         warningMessage = nil
 
-        // Guard against feedback: same device for input and output
-        if inputDeviceID == outputDeviceID {
+        // Guard against feedback: same device for input and output (only if both are explicit)
+        if inputDeviceID != 0 && outputDeviceID != 0 && inputDeviceID == outputDeviceID {
             errorMessage = "Input and output devices must be different to prevent audio feedback."
             return
         }
@@ -48,55 +50,12 @@ final class AudioPassthroughEngine {
         self.inputDeviceID = inputDeviceID
         self.outputDeviceID = outputDeviceID
 
-        let engine = AVAudioEngine()
-        self.audioEngine = engine
-
-        do {
-            // Step 1: Access nodes first — this forces AVAudioEngine to
-            // create the underlying audio units internally.
-            let inputNode = engine.inputNode
-            let mainMixer = engine.mainMixerNode
-            let outputNode = engine.outputNode
-
-            // Step 2: Now set devices — the audio units exist after node access.
-            // Input device is critical — if this fails, we can't proceed.
-            try setInputDevice(inputDeviceID, on: inputNode)
-
-            // Output device is a soft failure — if it fails, we fall back
-            // to the system default output (which is usually what the user wants).
-            let outputSet = setOutputDeviceSoft(outputDeviceID, on: outputNode)
-            if !outputSet {
-                warningMessage = "Using system default output (couldn't set specific device)."
-            }
-
-            // Step 3: Get the hardware input format AFTER setting the device,
-            // since the format depends on which device is selected.
-            let inputFormat = inputNode.outputFormat(forBus: 0)
-
-            guard inputFormat.sampleRate > 0 && inputFormat.channelCount > 0 else {
-                errorMessage = "Could not get a valid audio format from the selected input device."
+        // Try the preferred strategy, then fall back to simpler ones
+        if !tryStartWithDeviceOverrides(inputDeviceID: inputDeviceID, outputDeviceID: outputDeviceID, volume: volume) {
+            if !tryStartWithDefaults(volume: volume) {
+                // Both strategies failed — errorMessage is already set
                 return
             }
-
-            // Step 4: Connect the audio graph.
-            // input → mixer → output
-            // The mixer gives us volume control.
-            engine.connect(inputNode, to: mainMixer, format: inputFormat)
-            engine.connect(mainMixer, to: outputNode, format: nil)
-
-            // Step 5: Set the passthrough volume.
-            mainMixer.outputVolume = clampVolume(volume)
-
-            // Step 6: Prepare and start.
-            engine.prepare()
-            try engine.start()
-
-            isRunning = true
-            estimatedLatencyMs = calculateLatency(engine: engine)
-
-        } catch {
-            errorMessage = "Failed to start audio engine: \(error.localizedDescription)"
-            self.audioEngine = nil
         }
     }
 
@@ -110,9 +69,129 @@ final class AudioPassthroughEngine {
     }
 
     /// Update the passthrough volume while the engine is running.
-    /// - Parameter volume: Volume level from 0.0 (silent) to 1.5 (amplified).
     func setVolume(_ volume: Float) {
         audioEngine?.mainMixerNode.outputVolume = clampVolume(volume)
+    }
+
+    // MARK: - Start Strategies
+
+    /// Strategy 1: Set specific input/output devices via AudioUnit properties.
+    /// This is the preferred path when the user picks specific devices.
+    private func tryStartWithDeviceOverrides(inputDeviceID: AudioDeviceID, outputDeviceID: AudioDeviceID, volume: Float) -> Bool {
+        let engine = AVAudioEngine()
+
+        // Access nodes to force audio unit creation
+        let inputNode = engine.inputNode
+        _ = engine.mainMixerNode  // Force creation
+        let outputNode = engine.outputNode
+
+        // Try to set input device (only if non-default)
+        if inputDeviceID != 0 {
+            if !setDevice(inputDeviceID, onNode: inputNode, label: "input") {
+                print("[ClarityBuds] Strategy 1 failed: couldn't set input device \(inputDeviceID)")
+                return false // Fall through to Strategy 2
+            }
+        }
+
+        // Try to set output device (only if non-default)
+        if outputDeviceID != 0 {
+            if !setDevice(outputDeviceID, onNode: outputNode, label: "output") {
+                warningMessage = "Using system default output device."
+                // Non-fatal — continue with default output
+            }
+        }
+
+        return startEngine(engine, volume: volume)
+    }
+
+    /// Strategy 2: Use system defaults for everything — no device overrides.
+    /// AVAudioEngine automatically uses the system default input/output.
+    private func tryStartWithDefaults(volume: Float) -> Bool {
+        warningMessage = "Using system default audio devices."
+        let engine = AVAudioEngine()
+
+        // Just access the nodes — don't set any devices.
+        // AVAudioEngine will use whatever macOS has as default input/output.
+        _ = engine.inputNode
+        _ = engine.mainMixerNode
+        _ = engine.outputNode
+
+        return startEngine(engine, volume: volume)
+    }
+
+    /// Common engine start logic: connect nodes, set volume, start.
+    private func startEngine(_ engine: AVAudioEngine, volume: Float) -> Bool {
+        do {
+            let inputNode = engine.inputNode
+            let mainMixer = engine.mainMixerNode
+            let outputNode = engine.outputNode
+
+            // Get the hardware input format
+            let inputFormat = inputNode.outputFormat(forBus: 0)
+
+            guard inputFormat.sampleRate > 0 && inputFormat.channelCount > 0 else {
+                errorMessage = "No valid audio format from the input device. Check microphone permissions in System Settings → Privacy & Security → Microphone."
+                return false
+            }
+
+            // Connect: input → mixer → output
+            engine.connect(inputNode, to: mainMixer, format: inputFormat)
+            engine.connect(mainMixer, to: outputNode, format: nil)
+
+            // Set volume
+            mainMixer.outputVolume = clampVolume(volume)
+
+            // Prepare and start
+            engine.prepare()
+            try engine.start()
+
+            self.audioEngine = engine
+            isRunning = true
+            estimatedLatencyMs = calculateLatency(engine: engine)
+            return true
+
+        } catch {
+            errorMessage = "Failed to start audio engine: \(error.localizedDescription)"
+            return false
+        }
+    }
+
+    // MARK: - Device Helpers
+
+    /// Try to set a device on a node's audio unit. Returns true on success.
+    private func setDevice(_ deviceID: AudioDeviceID, onNode node: AVAudioNode, label: String) -> Bool {
+        // audioUnit is only available on AVAudioIONode subclasses
+        let audioUnit: AudioUnit?
+        if let ioNode = node as? AVAudioInputNode {
+            audioUnit = ioNode.audioUnit
+        } else if let ioNode = node as? AVAudioOutputNode {
+            audioUnit = ioNode.audioUnit
+        } else {
+            print("[ClarityBuds] \(label) node is not an I/O node.")
+            return false
+        }
+
+        guard let unit = audioUnit else {
+            print("[ClarityBuds] \(label) node has no audio unit.")
+            return false
+        }
+
+        var mutableID = deviceID
+        let status = AudioUnitSetProperty(
+            unit,
+            kAudioOutputUnitProperty_CurrentDevice,
+            kAudioUnitScope_Global,
+            0,
+            &mutableID,
+            UInt32(MemoryLayout<AudioDeviceID>.size)
+        )
+
+        if status != noErr {
+            print("[ClarityBuds] Failed to set \(label) device \(deviceID) — OSStatus: \(status)")
+            return false
+        }
+
+        return true
     }
 
     // MARK: - Private Helpers
@@ -124,73 +203,6 @@ final class AudioPassthroughEngine {
     private func calculateLatency(engine: AVAudioEngine) -> Double {
         let inputLatency = engine.inputNode.presentationLatency
         let outputLatency = engine.outputNode.presentationLatency
-        return (inputLatency + outputLatency) * 1000.0 // Convert to ms
-    }
-
-    /// Set the input device on the input node's Audio Unit.
-    /// This is a hard requirement — throws on failure.
-    private func setInputDevice(_ deviceID: AudioDeviceID, on inputNode: AVAudioInputNode) throws {
-        guard let audioUnit = inputNode.audioUnit else {
-            throw AudioEngineError.noAudioUnit(node: "input")
-        }
-
-        var deviceID = deviceID
-        let status = AudioUnitSetProperty(
-            audioUnit,
-            kAudioOutputUnitProperty_CurrentDevice,
-            kAudioUnitScope_Global,
-            0,
-            &deviceID,
-            UInt32(MemoryLayout<AudioDeviceID>.size)
-        )
-
-        guard status == noErr else {
-            throw AudioEngineError.deviceSetFailed(
-                device: "input",
-                status: status
-            )
-        }
-    }
-
-    /// Try to set the output device on the output node's Audio Unit.
-    /// Returns true if successful, false if it failed (non-fatal — system default is used).
-    private func setOutputDeviceSoft(_ deviceID: AudioDeviceID, on outputNode: AVAudioOutputNode) -> Bool {
-        guard let audioUnit = outputNode.audioUnit else {
-            print("[ClarityBuds] Output node has no audio unit — using system default output.")
-            return false
-        }
-
-        var deviceID = deviceID
-        let status = AudioUnitSetProperty(
-            audioUnit,
-            kAudioOutputUnitProperty_CurrentDevice,
-            kAudioUnitScope_Global,
-            0,
-            &deviceID,
-            UInt32(MemoryLayout<AudioDeviceID>.size)
-        )
-
-        if status != noErr {
-            print("[ClarityBuds] Could not set output device (OSStatus: \(status)) — using system default output.")
-            return false
-        }
-
-        return true
-    }
-}
-
-// MARK: - Errors
-
-enum AudioEngineError: LocalizedError {
-    case noAudioUnit(node: String)
-    case deviceSetFailed(device: String, status: OSStatus)
-
-    var errorDescription: String? {
-        switch self {
-        case .noAudioUnit(let node):
-            return "Could not access the \(node) audio unit for device configuration."
-        case .deviceSetFailed(let device, let status):
-            return "Failed to set \(device) device (error code: \(status))."
-        }
+        return (inputLatency + outputLatency) * 1000.0
     }
 }

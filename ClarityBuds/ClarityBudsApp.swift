@@ -1,4 +1,5 @@
 import SwiftUI
+@preconcurrency import UserNotifications
 
 /// The main entry point for ClarityBuds.
 /// This is a menu bar-only app (no Dock icon, no main window).
@@ -58,9 +59,56 @@ struct ClarityBudsApp: App {
     }
 
     init() {
+        // Show startup notification
+        showStartupNotification()
+
         // Register the global keyboard shortcut on launch
         setupGlobalShortcut()
     }
+
+    // MARK: - Startup Notification
+
+    private func showStartupNotification() {
+        // Request notification permission and send startup alert
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            guard granted else {
+                // Fall back to terminal message
+                print("✅ ClarityBuds is running! Look for the 👂 ear icon in your menu bar.")
+                return
+            }
+
+            let content = UNMutableNotificationContent()
+            content.title = "ClarityBuds is Running"
+            content.body = "Look for the 👂 ear icon in your menu bar. Press ⌥⇧T to toggle passthrough."
+            content.sound = .default
+
+            let request = UNNotificationRequest(
+                identifier: "claritybuds-startup",
+                content: content,
+                trigger: nil  // Deliver immediately
+            )
+
+            center.add(request) { error in
+                if let error = error {
+                    print("[ClarityBuds] Notification error: \(error.localizedDescription)")
+                }
+            }
+        }
+
+        // Always print to terminal too
+        print("""
+        ┌─────────────────────────────────────────────┐
+        │  ✅ ClarityBuds is running!                 │
+        │                                             │
+        │  👂 Look for the ear icon in your menu bar  │
+        │  ⌨️  Press ⌥⇧T to toggle passthrough       │
+        │  🛑 Press Ctrl+C here to quit               │
+        └─────────────────────────────────────────────┘
+        """)
+    }
+
+    // MARK: - Keyboard Shortcut
 
     private func setupGlobalShortcut() {
         // Use a slight delay to ensure the app is fully initialized
@@ -71,6 +119,8 @@ struct ClarityBudsApp: App {
         }
     }
 
+    // MARK: - Toggle
+
     private func togglePassthrough() {
         if appState.isPassthroughActive {
             audioEngine.stop()
@@ -78,13 +128,9 @@ struct ClarityBudsApp: App {
         } else {
             guard PermissionManager.isMicrophoneAuthorized else { return }
 
-            let inputID = appState.selectedInputDeviceID == 0
-                ? deviceManager.defaultInputDeviceID
-                : appState.selectedInputDeviceID
-
-            let outputID = appState.selectedOutputDeviceID == 0
-                ? deviceManager.defaultOutputDeviceID
-                : appState.selectedOutputDeviceID
+            // Pass 0 for system default, or the specific device ID
+            let inputID = appState.selectedInputDeviceID
+            let outputID = appState.selectedOutputDeviceID
 
             audioEngine.start(
                 inputDeviceID: inputID,
