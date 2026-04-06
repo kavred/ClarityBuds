@@ -18,6 +18,9 @@ final class AudioPassthroughEngine {
     /// Error message if the engine fails to start
     private(set) var errorMessage: String?
 
+    /// Warning message (non-fatal)
+    private(set) var warningMessage: String?
+
     // MARK: - Private
 
     private var audioEngine: AVAudioEngine?
@@ -34,6 +37,7 @@ final class AudioPassthroughEngine {
     func start(inputDeviceID: AudioDeviceID, outputDeviceID: AudioDeviceID, volume: Float) {
         stop()
         errorMessage = nil
+        warningMessage = nil
 
         // Guard against feedback: same device for input and output
         if inputDeviceID == outputDeviceID {
@@ -48,15 +52,25 @@ final class AudioPassthroughEngine {
         self.audioEngine = engine
 
         do {
-            // Set the input and output devices on the audio engine's underlying Audio Units
-            try setInputDevice(inputDeviceID, on: engine)
-            try setOutputDevice(outputDeviceID, on: engine)
-
+            // Step 1: Access nodes first — this forces AVAudioEngine to
+            // create the underlying audio units internally.
             let inputNode = engine.inputNode
             let mainMixer = engine.mainMixerNode
             let outputNode = engine.outputNode
 
-            // Get the hardware input format
+            // Step 2: Now set devices — the audio units exist after node access.
+            // Input device is critical — if this fails, we can't proceed.
+            try setInputDevice(inputDeviceID, on: inputNode)
+
+            // Output device is a soft failure — if it fails, we fall back
+            // to the system default output (which is usually what the user wants).
+            let outputSet = setOutputDeviceSoft(outputDeviceID, on: outputNode)
+            if !outputSet {
+                warningMessage = "Using system default output (couldn't set specific device)."
+            }
+
+            // Step 3: Get the hardware input format AFTER setting the device,
+            // since the format depends on which device is selected.
             let inputFormat = inputNode.outputFormat(forBus: 0)
 
             guard inputFormat.sampleRate > 0 && inputFormat.channelCount > 0 else {
@@ -64,17 +78,16 @@ final class AudioPassthroughEngine {
                 return
             }
 
-            // Connect: input → mixer → output
-            // The mixer allows us to control volume independently
+            // Step 4: Connect the audio graph.
+            // input → mixer → output
+            // The mixer gives us volume control.
             engine.connect(inputNode, to: mainMixer, format: inputFormat)
-
-            // Use nil format for mixer→output to let the engine negotiate
             engine.connect(mainMixer, to: outputNode, format: nil)
 
-            // Set the passthrough volume
+            // Step 5: Set the passthrough volume.
             mainMixer.outputVolume = clampVolume(volume)
 
-            // Prepare and start
+            // Step 6: Prepare and start.
             engine.prepare()
             try engine.start()
 
@@ -93,6 +106,7 @@ final class AudioPassthroughEngine {
         audioEngine = nil
         isRunning = false
         estimatedLatencyMs = 0
+        warningMessage = nil
     }
 
     /// Update the passthrough volume while the engine is running.
@@ -113,11 +127,11 @@ final class AudioPassthroughEngine {
         return (inputLatency + outputLatency) * 1000.0 // Convert to ms
     }
 
-    /// Set the input device on the AVAudioEngine's input node Audio Unit.
-    private func setInputDevice(_ deviceID: AudioDeviceID, on engine: AVAudioEngine) throws {
-        let inputNode = engine.inputNode
+    /// Set the input device on the input node's Audio Unit.
+    /// This is a hard requirement — throws on failure.
+    private func setInputDevice(_ deviceID: AudioDeviceID, on inputNode: AVAudioInputNode) throws {
         guard let audioUnit = inputNode.audioUnit else {
-            throw AudioEngineError.noAudioUnit
+            throw AudioEngineError.noAudioUnit(node: "input")
         }
 
         var deviceID = deviceID
@@ -138,11 +152,12 @@ final class AudioPassthroughEngine {
         }
     }
 
-    /// Set the output device on the AVAudioEngine's output node Audio Unit.
-    private func setOutputDevice(_ deviceID: AudioDeviceID, on engine: AVAudioEngine) throws {
-        let outputNode = engine.outputNode
+    /// Try to set the output device on the output node's Audio Unit.
+    /// Returns true if successful, false if it failed (non-fatal — system default is used).
+    private func setOutputDeviceSoft(_ deviceID: AudioDeviceID, on outputNode: AVAudioOutputNode) -> Bool {
         guard let audioUnit = outputNode.audioUnit else {
-            throw AudioEngineError.noAudioUnit
+            print("[ClarityBuds] Output node has no audio unit — using system default output.")
+            return false
         }
 
         var deviceID = deviceID
@@ -155,25 +170,25 @@ final class AudioPassthroughEngine {
             UInt32(MemoryLayout<AudioDeviceID>.size)
         )
 
-        guard status == noErr else {
-            throw AudioEngineError.deviceSetFailed(
-                device: "output",
-                status: status
-            )
+        if status != noErr {
+            print("[ClarityBuds] Could not set output device (OSStatus: \(status)) — using system default output.")
+            return false
         }
+
+        return true
     }
 }
 
 // MARK: - Errors
 
 enum AudioEngineError: LocalizedError {
-    case noAudioUnit
+    case noAudioUnit(node: String)
     case deviceSetFailed(device: String, status: OSStatus)
 
     var errorDescription: String? {
         switch self {
-        case .noAudioUnit:
-            return "Could not access the audio unit for device configuration."
+        case .noAudioUnit(let node):
+            return "Could not access the \(node) audio unit for device configuration."
         case .deviceSetFailed(let device, let status):
             return "Failed to set \(device) device (error code: \(status))."
         }

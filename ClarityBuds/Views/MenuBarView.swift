@@ -36,6 +36,10 @@ struct MenuBarView: View {
                 statusBanner
             }
 
+            if let warning = audioEngine.warningMessage {
+                warningBanner(warning)
+            }
+
             Divider()
                 .padding(.horizontal, 16)
 
@@ -232,6 +236,21 @@ struct MenuBarView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+    }
+
+    private func warningBanner(_ message: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "info.circle.fill")
+                .foregroundStyle(.yellow)
+                .font(.caption)
+
+            Text(message)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
     }
 
     // MARK: - Footer
