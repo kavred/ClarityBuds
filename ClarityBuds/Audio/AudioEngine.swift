@@ -5,7 +5,7 @@ import Combine
 /// The core audio engine that captures microphone input and routes it
 /// to the headphone output in real-time, creating ClarityBuds' passthrough effect.
 @Observable
-final class AudioPassthroughEngine {
+final class AudioPassthroughEngine: @unchecked Sendable {
 
     // MARK: - Public State
 
@@ -297,7 +297,7 @@ final class AudioPassthroughEngine {
         let stepDuration = duration / Double(steps)
         let volumeStep = (targetVolume - startVolume) / Float(steps)
 
-        fadeTask = Task { @MainActor [weak self] in
+        fadeTask = Task { [weak self] in
             for i in 1...steps {
                 if Task.isCancelled { break }
                 let currentVol = startVolume + (volumeStep * Float(i))

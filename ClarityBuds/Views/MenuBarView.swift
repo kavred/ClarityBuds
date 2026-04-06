@@ -12,6 +12,7 @@ struct MenuBarView: View {
 
     @State private var showPermissionAlert = false
     @State private var showFeedbackWarning = false
+    @State private var showTroubleshooting = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -76,6 +77,19 @@ struct MenuBarView: View {
 
             Spacer()
 
+            Button {
+                showTroubleshooting.toggle()
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+            .popover(isPresented: $showTroubleshooting, arrowEdge: .bottom) {
+                troubleshootingView
+            }
+            .padding(.trailing, 4)
+
             Text(shortcutLabel)
                 .font(.caption2)
                 .padding(.horizontal, 6)
@@ -91,6 +105,47 @@ struct MenuBarView: View {
             keyCode: appState.shortcutKeyCode,
             modifiers: appState.shortcutModifiers
         )
+    }
+
+    private var troubleshootingView: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Fixing Bluetooth Audio Delay")
+                .font(.headline)
+
+            Text("Bluetooth audio inherently has 150-250ms of delay. However, you can prevent macOS from adding even more massive latency by checking two things:")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Label("Disable Voice Isolation", systemImage: "mic.slash")
+                    .font(.subheadline.bold())
+                Text("Click the orange microphone icon in your Mac's top right menu bar (Control Center) and set Mic Mode to **Standard**.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Label("Match Sample Rates", systemImage: "waveform.path.ecg")
+                    .font(.subheadline.bold())
+                Text("Open the **Audio MIDI Setup** app. Ensure your Microphone and Headphones are set to the exact same frequency (e.g. 48,000 Hz).")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            HStack {
+                Spacer()
+                Button("Got it") {
+                    showTroubleshooting = false
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+            .padding(.top, 4)
+        }
+        .padding(16)
+        .frame(width: 320)
     }
 
     // MARK: - Toggle
