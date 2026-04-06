@@ -17,6 +17,9 @@
 
 set -e
 
+# Always ensure we are running from the project directory
+cd "$(dirname "$0")"
+
 echo "🔨 Building ClarityBuds..."
 swift build -c release 2>&1
 
