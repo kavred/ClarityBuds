@@ -18,9 +18,7 @@ final class AppState {
     /// Ambient passthrough volume (0.0 = silent, 1.0 = normal, 1.5 = amplified)
     var ambientVolume: Float = 0.75 {
         didSet {
-            let clamped = min(max(ambientVolume, 0.0), 1.5)
-            ambientVolume = clamped
-            UserDefaults.standard.set(clamped, forKey: Keys.volume)
+            UserDefaults.standard.set(ambientVolume, forKey: Keys.volume)
         }
     }
 
