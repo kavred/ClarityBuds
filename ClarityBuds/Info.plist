@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Microphone access description shown to the user -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>ClarityBuds needs microphone access to pass ambient sound through your headphones, giving any headphones a transparency mode effect.</string>
+
+    <!-- Hide from Dock — menu bar only app -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <!-- Bundle display name -->
+    <key>CFBundleDisplayName</key>
+    <string>ClarityBuds</string>
+
+    <!-- App category -->
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
+</dict>
+</plist>

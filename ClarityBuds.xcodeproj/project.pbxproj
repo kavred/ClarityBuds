@@ -1,0 +1,386 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		11526FB94F83757CFC1D8A3D /* KeyboardShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE65167766813071BA84417 /* KeyboardShortcut.swift */; };
+		3C6E87D348E4A8C3B83F7656 /* DeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C9A6AD7B3EC482036DCF2E /* DeviceManager.swift */; };
+		78FCDEE3C0AFE105649C0FB9 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090A846A2ED90C03196FB91D /* Permissions.swift */; };
+		82F77A05A281E63487A568AA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8782FCCA0509EF1F33AE676 /* AppState.swift */; };
+		912A5D9F6310503FE90CC215 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72C63A62E06E75220688388 /* MenuBarView.swift */; };
+		9ACD1E6430CB45E92F0A59B3 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1FB175BCA46DF339C83D15 /* AudioEngine.swift */; };
+		AAD9498A2481FAB86D437E91 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B631A3A1E9075F7A7F3A1893 /* SettingsView.swift */; };
+		C6745E60E26E453211235547 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2441DFCA7618B9664701D5A /* LaunchAtLogin.swift */; };
+		F00383CF4F10277FA25E7218 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDA0BCD4A6573FEBCA1D8B37 /* Assets.xcassets */; };
+		F179F47416AF6AA6F0723D4E /* ClarityBudsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE68D840F0AC2904D5E78D6 /* ClarityBudsApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		090A846A2ED90C03196FB91D /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		1DB6578C4EBE1954C2C7D33B /* ClarityBuds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClarityBuds.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DBEB0AA434D131303539F0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1EE65167766813071BA84417 /* KeyboardShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcut.swift; sourceTree = "<group>"; };
+		54C9A6AD7B3EC482036DCF2E /* DeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManager.swift; sourceTree = "<group>"; };
+		6D1FB175BCA46DF339C83D15 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
+		A2441DFCA7618B9664701D5A /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		A72C63A62E06E75220688388 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		A8782FCCA0509EF1F33AE676 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		B631A3A1E9075F7A7F3A1893 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C53817BB47F8CEA935091DDE /* ClarityBuds.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClarityBuds.entitlements; sourceTree = "<group>"; };
+		CDA0BCD4A6573FEBCA1D8B37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EFE68D840F0AC2904D5E78D6 /* ClarityBudsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClarityBudsApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		22EC2A8A565635B7A36866C8 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				6D1FB175BCA46DF339C83D15 /* AudioEngine.swift */,
+				54C9A6AD7B3EC482036DCF2E /* DeviceManager.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		2D9B6B646D723647B69B82CB = {
+			isa = PBXGroup;
+			children = (
+				AF50BBF174F3D385D1BE0C42 /* ClarityBuds */,
+				5FB82E8C9EB7ABE00A0150D8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5807D99F0EA79FA0F18F8EDC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDA0BCD4A6573FEBCA1D8B37 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5FB82E8C9EB7ABE00A0150D8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DB6578C4EBE1954C2C7D33B /* ClarityBuds.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		73BC29427488777EAB100716 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				1EE65167766813071BA84417 /* KeyboardShortcut.swift */,
+				A2441DFCA7618B9664701D5A /* LaunchAtLogin.swift */,
+				090A846A2ED90C03196FB91D /* Permissions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		8AD57CA590608E17FA15DEA7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A72C63A62E06E75220688388 /* MenuBarView.swift */,
+				B631A3A1E9075F7A7F3A1893 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AF50BBF174F3D385D1BE0C42 /* ClarityBuds */ = {
+			isa = PBXGroup;
+			children = (
+				C53817BB47F8CEA935091DDE /* ClarityBuds.entitlements */,
+				EFE68D840F0AC2904D5E78D6 /* ClarityBudsApp.swift */,
+				1DBEB0AA434D131303539F0A /* Info.plist */,
+				22EC2A8A565635B7A36866C8 /* Audio */,
+				D805431C6DF3818BBCCF19C1 /* Models */,
+				5807D99F0EA79FA0F18F8EDC /* Resources */,
+				73BC29427488777EAB100716 /* Utilities */,
+				8AD57CA590608E17FA15DEA7 /* Views */,
+			);
+			path = ClarityBuds;
+			sourceTree = "<group>";
+		};
+		D805431C6DF3818BBCCF19C1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A8782FCCA0509EF1F33AE676 /* AppState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7DF9374C2036574DDB694C68 /* ClarityBuds */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9333BEB93C294C5971970255 /* Build configuration list for PBXNativeTarget "ClarityBuds" */;
+			buildPhases = (
+				58AB0555844EF6F09E4D4BD8 /* Sources */,
+				BBE508F3526FA52A91C8FBF6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ClarityBuds;
+			packageProductDependencies = (
+			);
+			productName = ClarityBuds;
+			productReference = 1DB6578C4EBE1954C2C7D33B /* ClarityBuds.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F1C62F28594FEA230A3E4D95 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					7DF9374C2036574DDB694C68 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = EB94F052C40D1FAE2874C58D /* Build configuration list for PBXProject "ClarityBuds" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 2D9B6B646D723647B69B82CB;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5FB82E8C9EB7ABE00A0150D8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7DF9374C2036574DDB694C68 /* ClarityBuds */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BBE508F3526FA52A91C8FBF6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F00383CF4F10277FA25E7218 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58AB0555844EF6F09E4D4BD8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				82F77A05A281E63487A568AA /* AppState.swift in Sources */,
+				9ACD1E6430CB45E92F0A59B3 /* AudioEngine.swift in Sources */,
+				F179F47416AF6AA6F0723D4E /* ClarityBudsApp.swift in Sources */,
+				3C6E87D348E4A8C3B83F7656 /* DeviceManager.swift in Sources */,
+				11526FB94F83757CFC1D8A3D /* KeyboardShortcut.swift in Sources */,
+				C6745E60E26E453211235547 /* LaunchAtLogin.swift in Sources */,
+				912A5D9F6310503FE90CC215 /* MenuBarView.swift in Sources */,
+				78FCDEE3C0AFE105649C0FB9 /* Permissions.swift in Sources */,
+				AAD9498A2481FAB86D437E91 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0BFB0BDE75301C321C5A4A44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		2DCCF00ACD905A360A7B4AB8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		81BCDE3FAFA8C0DB2AC41CA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClarityBuds/ClarityBuds.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ClarityBuds/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.claritybuds.app;
+				PRODUCT_NAME = ClarityBuds;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
+		};
+		DECC67BEC8B0F2FAB630889D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClarityBuds/ClarityBuds.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ClarityBuds/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.claritybuds.app;
+				PRODUCT_NAME = ClarityBuds;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9333BEB93C294C5971970255 /* Build configuration list for PBXNativeTarget "ClarityBuds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81BCDE3FAFA8C0DB2AC41CA7 /* Debug */,
+				DECC67BEC8B0F2FAB630889D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EB94F052C40D1FAE2874C58D /* Build configuration list for PBXProject "ClarityBuds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2DCCF00ACD905A360A7B4AB8 /* Debug */,
+				0BFB0BDE75301C321C5A4A44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F1C62F28594FEA230A3E4D95 /* Project object */;
+}
