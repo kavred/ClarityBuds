@@ -26,6 +26,7 @@ final class AudioPassthroughEngine {
     private var audioEngine: AVAudioEngine?
     private var inputDeviceID: AudioDeviceID?
     private var outputDeviceID: AudioDeviceID?
+    private var fadeTask: Task<Void, Never>?
 
     // MARK: - Public API
 
@@ -61,6 +62,7 @@ final class AudioPassthroughEngine {
 
     /// Stop the audio passthrough.
     func stop() {
+        fadeTask?.cancel()
         audioEngine?.stop()
         audioEngine = nil
         isRunning = false
@@ -70,7 +72,7 @@ final class AudioPassthroughEngine {
 
     /// Update the passthrough volume while the engine is running.
     func setVolume(_ volume: Float) {
-        audioEngine?.mainMixerNode.outputVolume = clampVolume(volume)
+        fadeVolume(to: clampVolume(volume), duration: 0.1)
     }
 
     // MARK: - Start Strategies
@@ -126,6 +128,15 @@ final class AudioPassthroughEngine {
             let mainMixer = engine.mainMixerNode
             let outputNode = engine.outputNode
 
+            // explicitly disable OS-level voice processing (AEC/AGC) which adds latency
+            do {
+                if #available(macOS 13.0, *) {
+                    try inputNode.setVoiceProcessingEnabled(false)
+                }
+            } catch {
+                print("[ClarityBuds] Notice: Could not disable voice processing: \(error)")
+            }
+
             // Get the hardware input format
             let inputFormat = inputNode.outputFormat(forBus: 0)
 
@@ -138,8 +149,8 @@ final class AudioPassthroughEngine {
             engine.connect(inputNode, to: mainMixer, format: inputFormat)
             engine.connect(mainMixer, to: outputNode, format: nil)
 
-            // Set volume
-            mainMixer.outputVolume = clampVolume(volume)
+            // Set initial volume to 0.0 for fade-in
+            mainMixer.outputVolume = 0.0
 
             // Step: Aggressively optimize hardware buffer size to 64 frames for low latency
             optimizeDeviceBufferSizes(inputID: self.inputDeviceID ?? 0, outputID: self.outputDeviceID ?? 0)
@@ -151,6 +162,10 @@ final class AudioPassthroughEngine {
             self.audioEngine = engine
             isRunning = true
             estimatedLatencyMs = calculateLatency(engine: engine)
+
+            // Smooth fade in
+            fadeVolume(to: clampVolume(volume), duration: 0.25)
+
             return true
 
         } catch {
@@ -263,5 +278,35 @@ final class AudioPassthroughEngine {
         let inputLatency = engine.inputNode.presentationLatency
         let outputLatency = engine.outputNode.presentationLatency
         return (inputLatency + outputLatency) * 1000.0
+    }
+
+    /// Smoothly animates the volume up or down over a duration.
+    private func fadeVolume(to targetVolume: Float, duration: TimeInterval) {
+        fadeTask?.cancel()
+
+        guard let mixer = audioEngine?.mainMixerNode else { return }
+        let startVolume = mixer.outputVolume
+
+        // Don't fade if we're already exactly there
+        if abs(startVolume - targetVolume) < 0.01 {
+            mixer.outputVolume = targetVolume
+            return
+        }
+
+        let steps = 20
+        let stepDuration = duration / Double(steps)
+        let volumeStep = (targetVolume - startVolume) / Float(steps)
+
+        fadeTask = Task { @MainActor [weak self] in
+            for i in 1...steps {
+                if Task.isCancelled { break }
+                let currentVol = startVolume + (volumeStep * Float(i))
+                self?.audioEngine?.mainMixerNode.outputVolume = max(0, min(currentVol, 1.5))
+                try? await Task.sleep(for: .seconds(stepDuration))
+            }
+            if !Task.isCancelled {
+                self?.audioEngine?.mainMixerNode.outputVolume = max(0, min(targetVolume, 1.5))
+            }
+        }
     }
 }

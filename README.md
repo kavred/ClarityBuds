@@ -133,12 +133,19 @@ InputNode (Mic) ──→ MainMixerNode ──→ OutputNode (Headphones)
 
 ### Latency
 
-Typical latency is **5–20ms** depending on your hardware:
-- Built-in mic + Bluetooth headphones: ~15–25ms
-- Built-in mic + wired headphones: ~5–15ms
-- USB audio interface: ~3–10ms
+Typical processing latency is **~1.5ms** due to our aggressive 64-frame Core Audio hardware buffer optimization. However, your *total* latency depends entirely on your audio devices:
+- Built-in mic + wired headphones: **~3–5ms** (Flawless real-time transparency)
+- Built-in mic + USB audio interface: **~3–10ms**
+- Built-in mic + Bluetooth headphones: **~150–250ms** (due to physical A2DP Bluetooth encoding/decoding)
 
-This is generally imperceptible for ambient awareness.
+### Troubleshooting Bluetooth Latency
+
+If you are experiencing severe vocal delay or echoes while using Bluetooth, it is likely macOS software adding hidden processing. Try these two critical fixes:
+
+1. **Disable "Voice Isolation" Mic Mode** 
+   macOS 12+ has a "Voice Isolation" feature that uses machine learning to filter background noise, adding massive software latency. While ClarityBuds is on, click the orange microphone icon in your Mac's top right menu bar (Control Center) and ensure the mode is set to **Standard**.
+2. **Match Sample Rates in Audio MIDI Setup** 
+   If your microphone records at 48kHz but your headphones output at 44.1kHz, macOS buffers the audio to do hidden sample-rate math. Open the built-in macOS **Audio MIDI Setup** app and ensure your Mic and your Headphones are set to the exact same frequency rate (e.g. `48,000 Hz`).
 
 ## Known Limitations
 
