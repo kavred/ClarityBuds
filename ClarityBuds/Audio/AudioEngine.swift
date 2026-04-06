@@ -141,6 +141,9 @@ final class AudioPassthroughEngine {
             // Set volume
             mainMixer.outputVolume = clampVolume(volume)
 
+            // Step: Aggressively optimize hardware buffer size to 64 frames for low latency
+            optimizeDeviceBufferSizes(inputID: self.inputDeviceID ?? 0, outputID: self.outputDeviceID ?? 0)
+
             // Prepare and start
             engine.prepare()
             try engine.start()
@@ -192,6 +195,62 @@ final class AudioPassthroughEngine {
         }
 
         return true
+    }
+
+    // MARK: - Buffer Optimization
+
+    private func optimizeDeviceBufferSizes(inputID: AudioDeviceID, outputID: AudioDeviceID) {
+        let actualInputID = inputID == 0 ? getDefaultDevice(isInput: true) : inputID
+        let actualOutputID = outputID == 0 ? getDefaultDevice(isInput: false) : outputID
+
+        if actualInputID != 0 { optimizeBufferSize(for: actualInputID, label: "Input") }
+        if actualOutputID != 0 && actualOutputID != actualInputID { optimizeBufferSize(for: actualOutputID, label: "Output") }
+    }
+
+    private func optimizeBufferSize(for deviceID: AudioDeviceID, label: String) {
+        var propertyAddress = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyBufferFrameSize,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+
+        var bufferSize: UInt32 = 64 // Aggressive low latency (64 frames = ~1.3ms at 48kHz)
+        let size = UInt32(MemoryLayout<UInt32>.size)
+
+        let status = AudioObjectSetPropertyData(
+            deviceID,
+            &propertyAddress,
+            0,
+            nil,
+            size,
+            &bufferSize
+        )
+
+        if status != noErr {
+            print("[ClarityBuds] Could not optimize buffer size for \(label) device \(deviceID) (OSStatus: \(status)).")
+        } else {
+            print("[ClarityBuds] Successfully optimized buffer size to \(bufferSize) frames for \(label) device \(deviceID).")
+        }
+    }
+
+    private func getDefaultDevice(isInput: Bool) -> AudioDeviceID {
+        var propertyAddress = AudioObjectPropertyAddress(
+            mSelector: isInput ? kAudioHardwarePropertyDefaultInputDevice : kAudioHardwarePropertyDefaultOutputDevice,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+
+        var deviceID: AudioDeviceID = 0
+        var dataSize = UInt32(MemoryLayout<AudioDeviceID>.size)
+
+        let status = AudioObjectGetPropertyData(
+            AudioObjectID(kAudioObjectSystemObject),
+            &propertyAddress,
+            0, nil,
+            &dataSize,
+            &deviceID
+        )
+        return status == noErr ? deviceID : 0
     }
 
     // MARK: - Private Helpers
