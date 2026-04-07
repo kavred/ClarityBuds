@@ -20,8 +20,28 @@ set -e
 # Always ensure we are running from the project directory
 cd "$(dirname "$0")"
 
-echo "🔨 Building ClarityBuds..."
-swift build -c release 2>&1
+swift build -c release > .build.log 2>&1 &
+PID=$!
+
+# Loading Spinner
+spin='-\|/'
+i=0
+while kill -0 $PID 2>/dev/null; do
+    i=$(( (i+1) %4 ))
+    printf "\r🔨 Compiling ClarityBuds. Please wait... %c" "${spin:$i:1}"
+    sleep 0.1
+done
+
+wait $PID
+if [ $? -ne 0 ]; then
+    printf "\r❌ Compilation failed!                   \n"
+    cat .build.log
+    rm -f .build.log
+    exit 1
+fi
+
+printf "\r✅ Compilation finished successfully!          \n"
+rm -f .build.log
 
 echo ""
 echo "📦 Creating app bundle..."
