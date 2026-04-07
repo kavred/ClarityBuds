@@ -68,16 +68,16 @@ Then press `⌘R` to build and run.
 
 ### Option 2: Download Pre-built Binary
 
-Check the [Releases](https://github.com/kavred/ClarityBuds/releases/latest) page for pre-built binaries. Note: since this app is not signed with a paid Apple Developer certificate, macOS Gatekeeper will block it by default.
+Check the [Releases](https://github.com/kavred/ClarityBuds/releases/latest) page for pre-built binaries. Note: since this app is not signed with a paid Apple Developer certificate, macOS Gatekeeper protects you by stopping it from launching immediately.
 
-**To run an unsigned app:**
-1. Download `ClarityBuds.zip` from Releases
-2. Unzip and move to your Applications folder
-3. Right-click (or Control-click) the app and select **Open**
-4. Click **Open** in the dialog that appears
-5. The app will now run and be remembered for future launches
+**To install from GitHub:**
+1. Download `ClarityBudsRelease.zip` from the Releases page.
+2. Double-click the `.zip` file in your Downloads folder to extract it. This will create the `ClarityBuds.app` icon.
+3. Drag `ClarityBuds.app` directly into your **Applications** folder.
+4. Open your Applications folder, **Right-click** (or Control-click) on `ClarityBuds` and select **Open**.
+5. Click **Open** on the security warning dialog that appears.
 
-> **Note:** You only need to do the right-click → Open step once. After that, the app launches normally.
+> **Note:** You only ever need to do the right-click → Open step **once**. After that, the app launches normally by clicking it in Launchpad or Applications!
 
 ## Usage
 
