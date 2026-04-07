@@ -68,7 +68,7 @@ Then press `⌘R` to build and run.
 
 ### Option 2: Download Pre-built Binary
 
-Check the [Releases](../../releases/latest) page for pre-built binaries. Note: since this app is not signed with a paid Apple Developer certificate, macOS Gatekeeper will block it by default.
+Check the [Releases](https://github.com/kavred/ClarityBuds/releases/latest) page for pre-built binaries. Note: since this app is not signed with a paid Apple Developer certificate, macOS Gatekeeper will block it by default.
 
 **To run an unsigned app:**
 1. Download `ClarityBuds.zip` from Releases
