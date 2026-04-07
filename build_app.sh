@@ -96,12 +96,18 @@ cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
 EOF
 
 echo ""
-echo "✅ ClarityBuds.app built successfully!"
+echo "📦 Installing to /Applications..."
+
+# Remove old installation if present
+rm -rf /Applications/ClarityBuds.app
+
+# Move the newly made app to the Applications folder
+mv ClarityBuds.app /Applications/
+
 echo ""
-echo "To run:"
-echo "  open ClarityBuds.app"
+echo "✅ ClarityBuds successfully installed!"
 echo ""
-echo "Or to install:"
-echo "  cp -r ClarityBuds.app /Applications/"
+echo "To run your app, you can launch it from your Applications folder,"
+echo "or run this command:"
 echo "  open /Applications/ClarityBuds.app"
 echo ""
