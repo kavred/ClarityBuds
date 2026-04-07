@@ -112,10 +112,22 @@ struct MenuBarView: View {
             Text("Fixing Bluetooth Audio Delay")
                 .font(.headline)
 
-            Text("Bluetooth audio inherently has 150-250ms of delay. However, you can prevent macOS from adding even more massive latency by checking two things:")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                    Text("**Hardware Limitation:** Unlike real AirPods which use internal chips, software passthrough over Bluetooth has a physical delay limit of ~150ms. Bypassing the Mac entirely is physically impossible.")
+                        .font(.caption)
+                }
+                .padding(8)
+                .background(Color.orange.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                Text("However, prevent macOS from making it worse by checking two things:")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             
             VStack(alignment: .leading, spacing: 4) {
                 Label("Disable Voice Isolation", systemImage: "mic.slash")
@@ -311,22 +323,43 @@ struct MenuBarView: View {
     // MARK: - Footer
 
     private var footerSection: some View {
-        HStack {
-            Button("Quit") {
-                onQuit()
+        VStack(spacing: 0) {
+            Link(destination: URL(string: "https://github.com/kavred/ClarityBuds/issues")!) {
+                HStack {
+                    Image(systemName: "ellipsis.message.fill")
+                        .foregroundStyle(.blue)
+                    Text("Suggest Feature / Report Issue")
+                        .font(.caption.weight(.medium))
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.blue.opacity(0.05))
             }
             .buttonStyle(.plain)
-            .font(.caption)
-            .foregroundStyle(.secondary)
 
-            Spacer()
+            Divider()
 
-            Text("v1.0.0")
-                .font(.caption2)
-                .foregroundStyle(.quaternary)
+            HStack {
+                Button("Quit") {
+                    onQuit()
+                }
+                .buttonStyle(.plain)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Text("v1.0.0")
+                    .font(.caption2)
+                    .foregroundStyle(.quaternary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
     }
 
     // MARK: - Actions

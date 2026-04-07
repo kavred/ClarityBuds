@@ -14,6 +14,10 @@ ClarityBuds is a lightweight, native macOS menu bar utility that captures audio 
 🎵 System Audio ─────────────────────────┘
 ```
 
+> [!WARNING]
+> **Bluetooth Hardware Limitations:**
+> This software routes audio through your Mac. Standard Bluetooth headphones inherently buffer their audio, creating a physical, inescapable delay of ~150-250ms that software cannot bypass. **Do not expect real-time zero-latency AirPods Pro quality from standard Bluetooth headphones.** For instantaneous real-time transparency, you MUST use wired headphones or a 2.4GHz wireless dongle.
+
 Your system audio (music, videos, calls) plays normally through your headphones. ClarityBuds **adds** your microphone's ambient sound on top, so you can hear conversations, announcements, traffic, and the world around you — without removing your headphones.
 
 ## Features
