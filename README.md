@@ -1,8 +1,9 @@
 # ClarityBuds
+![macOS](https://img.shields.io/badge/OS-macOS_14.0%2B-black?style=flat-square&logo=apple)
 
 **Give any headphones AirPods-style Transparency Mode on macOS.**
 
-ClarityBuds is a lightweight, native macOS menu bar utility that captures audio from your Mac's microphone and routes it through your headphones in real-time — letting you hear the world around you while still enjoying your music, podcasts, or calls.
+ClarityBuds is a lightweight, native **macOS-only** menu bar utility that captures audio from your Mac's microphone and routes it through your headphones in real-time — letting you hear the world around you while still enjoying your music, podcasts, or calls.
 
 ---
 
@@ -49,12 +50,11 @@ Your system audio (music, videos, calls) plays normally through your headphones.
 git clone https://github.com/kavred/ClarityBuds.git
 cd ClarityBuds
 
-# Build with Swift Package Manager
-swift build -c release
-
-# The binary is at:
-# .build/release/ClarityBuds
+# Run the automated build & install script
+./build_app.sh
 ```
+
+The script will automatically compile the app, bundle it properly, and install it directly to your `/Applications` folder!
 
 **Or open in Xcode:**
 
