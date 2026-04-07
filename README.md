@@ -46,8 +46,8 @@ Your system audio (music, videos, calls) plays normally through your headphones.
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/Transparency-App.git
-cd Transparency-App
+git clone https://github.com/kavred/ClarityBuds.git
+cd ClarityBuds
 
 # Build with Swift Package Manager
 swift build -c release
@@ -96,7 +96,7 @@ Check the [Releases](../../releases/latest) page for pre-built binaries. Note: s
 ## Project Structure
 
 ```
-Transparency-App/
+ClarityBuds/
 ├── Package.swift                          # Swift Package Manager config
 ├── project.yml                            # XcodeGen project specification
 ├── ClarityBuds/
