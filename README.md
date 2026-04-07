@@ -72,12 +72,13 @@ Check the [Releases](https://github.com/kavred/ClarityBuds/releases/latest) page
 
 **To install from GitHub:**
 1. Download `ClarityBudsRelease.zip` from the Releases page.
-2. Double-click the `.zip` file in your Downloads folder to extract it. This will create the `ClarityBuds.app` icon.
+2. Double-click the `.zip` file in your Downloads folder to extract it.
 3. Drag `ClarityBuds.app` directly into your **Applications** folder.
-4. Open your Applications folder, **Right-click** (or Control-click) on `ClarityBuds` and select **Open**.
-5. Click **Open** on the security warning dialog that appears.
-
-> **Note:** You only ever need to do the right-click → Open step **once**. After that, the app launches normally by clicking it in Launchpad or Applications!
+4. **Bypass Apple Gatekeeper:** Because this app is open-source and not signed with a paid Apple Developer certificate, macOS will quarantine the downloaded file. When you try to open it, macOS will falsely claim the app is *"damaged and should be moved to the Trash"*. This is normal for unsigned apps. To fix it, open Apple's **Terminal** app and paste this exact command to remove the quarantine:
+   ```bash
+   xattr -cr /Applications/ClarityBuds.app
+   ```
+5. You can now double-click and launch ClarityBuds normally from your Applications folder!
 
 ## Usage
 
